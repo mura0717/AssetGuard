@@ -45,7 +45,7 @@ SERVER_RULES = {
 VIRTUAL_MACHINE_RULES = {
     'vendors': ['vmware', 'virtualbox', 'qemu', 'microsoft corporation', 'proxmox', 'red hat', 'bochs'],
     'model_keywords': ['virtual machine', 'vm', 'kvm', 'hyper-v', 'virtualbox', 'vmware virtual platform','bochs', 'qemu'],
-    'hostname_keywords': ['ubuntu', 'debian', 'centos', 'vm', 'vcenter', 'esx', 'hyperv', 'hyper-v', 'zabbix-proxy.diabetes.local']
+    'hostname_keywords': ['ubuntu', 'debian', 'centos', 'vm', 'vcenter', 'esx', 'hyperv', 'hyper-v', 'zabbix-proxy']
 }
 
 CONTAINER_RULES = {

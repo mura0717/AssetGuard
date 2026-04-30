@@ -15,8 +15,6 @@ This project acts as an automated, centralized asset pipeline (dubbed "Project H
 
 
 
----
-
 ## 2. Necessary Setup
 
 For the code to function correctly, you need the following prerequisites:
@@ -30,7 +28,7 @@ For the code to function correctly, you need the following prerequisites:
 
 ### Wazuh Integration & Custom Alerts Setup
 
-The script does not send data directly to the Wazuh indexer. Instead, it appends event logs to a local file (`/opt/diabetes/proxmox-basic-soc/logs/wazuh_events.jsonl`).
+The script does not send data directly to the Wazuh indexer. Instead, it appends event logs to a local file (`/opt/proxmox-basic-soc/logs/wazuh_events.jsonl`).
 
 **Step 1: Configure the Local Agent**
 Add the following block to `/var/ossec/etc/ossec.conf` on the machine running the script to ingest the logs:
@@ -38,9 +36,8 @@ Add the following block to `/var/ossec/etc/ossec.conf` on the machine running th
 ```xml
 <localfile>
   <log_format>json</log_format>
-  <location>/opt/diabetes/proxmox-basic-soc/logs/wazuh_events.jsonl</location>
+  <location>/opt/proxmox-basic-soc/logs/wazuh_events.jsonl</location>
 </localfile>
-
 ```
 
 **Step 2: Add Custom Rules on the Wazuh Manager**
@@ -82,10 +79,8 @@ To generate alerts from the pipeline's data, add the following custom rules to `
     <group>hydra_critical,security_gap,</group>
   </rule>
 </group>
-
 ```
 
----
 
 ## 3. How to Use the Code
 
@@ -96,7 +91,6 @@ Runs data collection from all sources and dispatches to all integrations.
 
 ```bash
 python -m proxmox_soc.hydra_orchestrator
-
 ```
 
 **Dry Run Mode:**
@@ -104,7 +98,6 @@ Executes the entire pipeline without making actual API calls or changes. It writ
 
 ```bash
 python -m proxmox_soc.hydra_orchestrator --dry-run
-
 ```
 
 **Source-Specific Options:**
@@ -130,7 +123,6 @@ Include or exclude specific target destinations.
 * Run system tests instead of a sync: `python -m proxmox_soc.hydra_orchestrator --test`
 * Enable verbose output for detailed troubleshooting: `python -m proxmox_soc.hydra_orchestrator --verbose`
 
----
 
 ## 4. Debugging and Logging Tools
 
@@ -161,9 +153,9 @@ Located at `proxmox_soc/snipe_it/snipe_scripts/log/snipe_snapshotter.py`.
 
 The pipeline uses specialized loggers to record specific actions into organized files:
 
-* **`new_asset_logger`:** Records details of completely newly discovered devices that are being created for the first time.
-* **`other_asset_logger`:** Records devices that are merely being updated (e.g., an IP change) or skipped (because no data changed).
-* **`failure_logger`:** Catches and logs instances where an asset fails to sync due to missing fields, API timeouts, or validation errors.
+* `new_asset_logger`: Records details of completely newly discovered devices that are being created for the first time.
+* `other_asset_logger`: Records devices that are merely being updated (e.g., an IP change) or skipped (because no data changed).
+* `failure_logger`: Catches and logs instances where an asset fails to sync due to missing fields, API timeouts, or validation errors.
 
 ### Debug Logs (Verbose Mode)
 
@@ -173,7 +165,6 @@ When running the orchestrator with the `--verbose` (or `-v`) flag, the system pr
 * The raw HTTP responses and status codes from the SOC endpoints.
 * The exact, formatted JSON payloads being dispatched to Snipe-IT, Zabbix, and Wazuh just before transmission.
 
----
 
 ## 5. Proxmox LXC Project Setup (Reference Architecture)
 
@@ -190,12 +181,16 @@ This architecture details a "Zero Budget" multi-node Proxmox Virtual Environment
 
 To allow the scanner (Node 1) to perform Layer 2 ARP scans across multiple subnets and bypass inter-VLAN firewalls:
 
-1. **Physical Switch:** The physical port connected to Node 1 is configured as a **Trunk** port (e.g., Untagged VLAN 1, Tagged VLANs 5, 333).
+
+
+1. **Physical Switch:** The physical port connected to Node 1 is configured as a **Trunk** port (e.g., allowing your primary management VLAN and any specific target VLANs to be scanned).
 2. **Proxmox Bridge:** The virtual bridge (`vmbr0`) on Node 1 is set to **VLAN Aware**.
-3. **Scanner LXC (Multi-Homed):** The scanner container is assigned multiple virtual network interfaces directly connected to target VLANs:
-* `eth0`: VLAN 1 (Management, Internet, and Gateway for Layer 3 routed scans).
-* `eth1`: VLAN 5 (Client devices, no gateway).
-* `eth2`: VLAN 333 (Guest WiFi, no gateway).
+3. **Scanner LXC (Multi-Homed):** The scanner container is assigned multiple virtual network interfaces directly connected to target VLANs. **These should be customized to match your specific network topography.** For example:
+
+
+* `eth0`: Your Management VLAN (e.g., VLAN 10 - provides Internet access and Gateway for Layer 3 routed scans).
+* `eth1`: Target Subnet A (e.g., VLAN 20 - Corporate/Client devices, no gateway).
+* `eth2`: Target Subnet B (e.g., VLAN 30 - Guest WiFi or IoT network, no gateway).
 
 
 
@@ -204,31 +199,34 @@ To allow the scanner (Node 1) to perform Layer 2 ARP scans across multiple subne
 * **Snipe-IT Database (SSH Tunneling):** Instead of opening MariaDB to the network (port 3306), MariaDB is bound strictly to `127.0.0.1`. The Python scanner establishes an automated SSH tunnel to the Snipe-IT container to perform administrative database tasks securely.
 * **Scanner Sudo Privileges:** A dedicated user runs the Python script. To allow Nmap to perform OS fingerprinting and ARP pings, passwordless sudo is configured strictly for the Python executable in the sudoers file.
 * **Zabbix Agent 2 Systemd Fix (Debian LXC):**
-If the Zabbix agent fails to start after a container reboot due to a missing `/run/zabbix` PID folder, a systemd override ensures the directory is created:
+  If the Zabbix agent fails to start after a container reboot due to a missing `/run/zabbix` PID folder, a systemd override ensures the directory is created:
+
 ```ini
 # sudo systemctl edit zabbix-agent2
 [Service]
 RuntimeDirectory=zabbix
 RuntimeDirectoryMode=0755
-
 ```
 
 
 * **Logging Fix for Debian 13 LXC:**
-In Debian 13 containers, `systemd-journald` often fails due to namespace restrictions. To ensure the script's `logger` commands function correctly:
+  In Debian 13 containers, `systemd-journald` often fails due to namespace restrictions. To ensure the script's `logger` commands function correctly:
+
+
+
 1. Mask `systemd-journald` services.
 2. Create a systemd override for `rsyslog` setting sandboxing features (`PrivateDevices`, `ProtectSystem`, etc.) to `no`.
 3. Configure the `imuxsock` module in `/etc/rsyslog.d/00-imuxsock.conf` to create the `/dev/log` socket directly.
 
 
 
----
-
 ## 6. Appendix: Resource Allocation & ZRAM Settings
 
-For environments with strict hardware limitations (e.g., 8GB RAM or less per node), ZRAM is required to prevent containers—especially Java-heavy services like Wazuh—from crashing.
+For environments with strict hardware limitations (e.g., 8GB RAM or less per node), ZRAM can be used to prevent containers—especially Java-heavy services like Wazuh—from crashing.
 
 ### ZRAM Configuration Steps
+
+
 
 1. Install `zram-tools` on all nodes (`apt install zram-tools`).
 2. Configure the settings in `/etc/default/zramswap`.
@@ -238,8 +236,10 @@ For environments with strict hardware limitations (e.g., 8GB RAM or less per nod
 ### Recommended Node Settings
 
 | Node | Role | RAM Allocation | ZRAM Algorithm | ZRAM Percent | Swappiness | Note |
-| --- | --- | --- | --- | --- | --- | --- |
+|----|----|----|----|----|----|----|
 | **Node 1** | Hydra Scanner | 2 GB | `lz4` | 40% | Default (60) | `lz4` saves CPU cycles for intensive Nmap scanning. |
 | **Node 2** | Wazuh AIO | 6 GB | `zstd` | 75% | 10 | High capacity buffer; low swappiness prevents the Java Heap from swapping to disk and crashing. |
 | **Node 3** | Zabbix | 4 GB | `zstd` | 60% | 60 | Balanced for database caching. |
 | **Node 4** | Snipe-IT | 2 GB | `zstd` | 60% | 60 | Balanced for Web/DB operations. |
+
+
