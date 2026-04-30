@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "soc_stack"  # The name of the inner folder containing your code
+version = "0.1.0"
+description = "A basic Security Operations Center built upon virtualization cluster."
+dependencies = [
+    "requests", "python-dotenv", "python-crontab", "msal", "pyzabbix", "python-nmap", "pymysql", "sshtunnel", "urllib3"
+]
+
+[tool.setuptools.packages.find]
+where = ["."]  # Tells setuptools to look in the current directory for packages
+include = ["soc_stack*"] 
+namespaces = false # specific setting to avoid accidentally grabbing other folders

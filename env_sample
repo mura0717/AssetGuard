@@ -1,0 +1,129 @@
+# SNIPE-IT Configuration
+SNIPE_HOST_IP=
+SNIPE_DIRECT_PORT=
+SNIPE_PROXY_PORT=
+SNIPE_API_TOKEN= 
+SNIPE_IT_APP_PATH=
+SNIPE_CONFIG_DEBUG=0
+
+# SNIPE-IT DB
+DB_NAME=
+DB_USER=
+DB_PASS=
+DB_HOST=
+DB_PORT=
+DB_SSH_PORT=
+DB_SSH_USER=
+DB_SSH_KEY_PATH=
+
+# ZABBIX Configuration
+ZABBIX_HOST_IP=
+ZABBIX_DIRECT_PORT=
+ZABBIX_PROXY_PORT=
+ZABBIX_USER=
+ZABBIX_PASS=
+
+# WAZUH Configuration
+WAZUH_HOST_IP=
+WAZUH_DIRECT_API_PORT=
+WAZUH_DIRECT_INDEXER_PORT=
+WAZUH_PROXY_API_PORT=
+WAZUH_PROXY_INDEXER_PORT=
+WAZUH_API_USER=
+WAZUH_API_PASS=
+WAZUH_INDEXER_USER= # Not in use in this implementation due to logs being pulled via file read in /logs/wazuh_logs/wazuh_events.jsonl
+WAZUH_INDEXER_PASS= # Not in use in this implementation due to logs being pulled via file read in /logs/wazuh_logs/wazuh_events.jsonl
+WAZUH_EVENT_LOG_PATH=/opt/diabetes/virtualization-basic-soc/logs/wazuh_logs/wazuh_events.jsonl
+WAZUH_STATE_FILE_PATH=/opt/diabetes/virtualization-basic-soc/logs/wazuh_logs/wazuh_state.json
+
+# Verification of SSL certs
+VERIFY_SSL=False
+
+# Azure/Intune Configuration
+AZURE_TENANT_ID=
+AZURE_CLIENT_ID=
+AZURE_CLIENT_SECRET=
+AZURE_DEBUG=0
+
+# Config Paths
+NGINX_CONF_FILE=
+APACHE_CONF_FILE=
+
+SNIPE_IT_ENV_FILE=
+SNIPE_IT_DIR=
+
+ENV_FILE_PATH=
+
+# Proxy Configuration
+USE_PROXY=False
+PROXY_HOST= # IP for the prozy server
+
+# Logger Configuration
+LOG_FILE_PATH=
+
+# Failure Logger Configuration
+FAILURE_LOG_PATH=
+
+# Other Assets Logger Configuration
+OTHER_ASSETS_LOG_PATH=
+
+# New Asset Logger Configuration
+NEW_ASSET_LOG_PATH=
+
+
+# DEBUGGING, TEST & LOGGING Flags - Set to 1 to enable, 0 to disable
+
+# Scanner Debug flags
+# Microsoft365 Sync debugging flags
+MS365_DEBUG=0
+MS365_CATEGORIZATION_DEBUG=0
+
+# Intune Debug flags
+INTUNE_DEBUG=0
+INTUNE_CATEGORIZATION_DEBUG=0
+
+# Teams Debug flags
+TEAMS_DEBUG=0
+TEAMS_CATEGORIZATION_DEBUG=0
+
+# Entra Debug flags
+ENTRA_DEBUG=0
+ENTRA_CATEGORIZATION_DEBUG=0
+
+# Nmap Debug flags
+NMAP_DEBUG=0  
+NMAP_CATEGORIZATION_DEBUG=0
+
+# Hydra Debug flags
+HYDRA_DEBUG=0
+HYDRA_SETTINGS_DEBUG=0
+
+# Hydra Test
+HYDRA_INTEGRATION_TESTS=0
+
+# Pipeline Orchestration
+SNIPE_PIPELINE_DEBUG=0
+WAZUH_PIPELINE_DEBUG=0
+ZABBIX_PIPELINE_DEBUG=0
+
+# Asset Resolver Debug flags
+ASSET_RESOLVER_DEBUG=0
+
+# Snipe Debugging flags
+SNIPE_BUILDER_DEBUG=0
+SNIPE_DISPATCHER_DEBUG=0
+
+# Zabbix Debugging flags
+ZABBIX_STATE_DEBUG=0
+ZABBIX_BUILDER_DEBUG=0
+ZABBIX_DISPATCHER_DEBUG=0
+
+# Wazuh Debugging flags
+WAZUH_BUILDER_DEBUG=0
+WAZUH_DISPATCHER_DEBUG=0
+
+
+# NETWORK CONFIGURATION
+
+# 0=discovery only 1= port scan
+NMAP_DEEP=0

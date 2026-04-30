@@ -1,0 +1,69 @@
+# /opt/diabetes/virtualization-basic-soc/crontab.txt
+# Install: crontab /opt/diabetes/virtualization-basic-soc/crontab.txt
+# Verify:  crontab -l
+
+SHELL=/bin/bash
+PATH=/usr/local/bin:/usr/bin:/bin
+MAILTO=""
+
+# ============================================
+# NMAP SCANS (staggered to avoid overlap)
+# ============================================
+
+# Fast Discovery - Every 4 hours at :00
+# Lightweight ping sweep to find new devices
+0 */4 * * * /opt/diabetes/virtualization-basic-soc/run_pipeline.sh --nmap fast-discovery
+
+# Standard Discovery - Twice daily at 6:30 AM and 6:30 PM
+# Top 50 ports with DNS resolution
+30 6,18 * * * /opt/diabetes/virtualization-basic-soc/run_pipeline.sh --nmap discovery
+
+# Inventory - Daily at 1:30 AM
+# OS detection + top 50 ports
+30 1 * * * /opt/diabetes/virtualization-basic-soc/run_pipeline.sh --nmap inventory
+
+# Web Apps - Daily at 4:00 AM
+# HTTP/HTTPS enumeration
+0 4 * * * /opt/diabetes/virtualization-basic-soc/run_pipeline.sh --nmap web
+
+# Network Devices - Daily at 4:30 AM
+# SNMP/SSH discovery
+30 4 * * * /opt/diabetes/virtualization-basic-soc/run_pipeline.sh --nmap network
+
+# Basic Service Detection - Weekly Wednesday at 2:00 AM
+# Top 1000 ports with version detection
+0 2 * * 3 /opt/diabetes/virtualization-basic-soc/run_pipeline.sh --nmap basic
+
+# Detailed - Weekly Sunday at 3:00 AM
+# OS + Service + Version detection
+0 3 * * 0 /opt/diabetes/virtualization-basic-soc/run_pipeline.sh --nmap detailed
+
+# Vulnerability - Monthly 1st Saturday at 2:00 AM
+# Security scripts (heavy)
+0 2 1-7 * 6 /opt/diabetes/virtualization-basic-soc/run_pipeline.sh --nmap vulnerability
+
+# Full Audit - Quarterly (1st of Jan, Apr, Jul, Oct) at 1:00 AM
+0 1 1 1,4,7,10 * /opt/diabetes/virtualization-basic-soc/run_pipeline.sh --nmap full
+
+# ============================================
+# MICROSOFT 365
+# ============================================
+
+# MS365 Sync - Every 4 hours at :15 (offset from nmap)
+# Aligns with Intune 8-hour check-in cycle
+15 */4 * * * /opt/diabetes/virtualization-basic-soc/run_pipeline.sh --ms365
+
+# ============================================
+# MAINTENANCE
+# ============================================
+
+# Daily Snipe-IT snapshot at midnight
+0 0 * * * cd /opt/diabetes/virtualization-basic-soc && /usr/bin/python3 -m virtualization_soc.snipe_it.snipe_scripts.log.snipe_snapshotter take >> logs/snipe_snapshots.log 2>&1
+
+# Weekly log cleanup - Sunday at 23:00
+# Delete logs older than 30 days
+0 23 * * 0 find /opt/diabetes/virtualization-basic-soc/logs -name "*.log" -mtime +30 -delete
+
+# Weekly dry-run cleanup - Sunday at 23:30
+# Delete dry-run files older than 7 days
+30 23 * * 0 find /opt/diabetes/virtualization-basic-soc/logs/dry_runs -name "*.json" -mtime +7 -delete

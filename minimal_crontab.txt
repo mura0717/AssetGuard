@@ -1,0 +1,16 @@
+# MINIMAL CRONTAB - Start here, expand as needed
+
+SHELL=/bin/bash
+PATH=/usr/local/bin:/usr/bin:/bin
+
+# Discovery every 4 hours
+0 */4 * * * /opt/diabetes/virtualization-basic-soc/run_pipeline.sh --nmap discovery
+
+# MS365 every 4 hours (offset by 2 hours)
+0 2,6,10,14,18,22 * * * /opt/diabetes/virtualization-basic-soc/run_pipeline.sh --ms365
+
+# Weekly detailed scan - Sunday 3 AM
+0 3 * * 0 /opt/diabetes/virtualization-basic-soc/run_pipeline.sh --nmap detailed
+
+# Daily snapshot
+0 0 * * * cd /opt/diabetes/virtualization-basic-soc && /usr/bin/python3 -m virtualization_soc.snipe_it.snipe_scripts.log.snipe_snapshotter take >> logs/snipe_snapshots.log 2>&1
