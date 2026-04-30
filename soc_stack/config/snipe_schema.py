@@ -541,9 +541,8 @@ MANUFACTURERS = [
 ]
 
 # Define Locations
-LOCATIONS = [
-    "Glostrup",
-    "Odense",
-    "Off-site",
-    "Cloud"
-]
+try:
+    from soc_stack.config.network_config import LOCATIONS
+except ImportError:
+    print("WARNING: soc_stack/config/network_config.py not found. Please copy network_config.sample.py to network_config.py")
+    LOCATIONS = []

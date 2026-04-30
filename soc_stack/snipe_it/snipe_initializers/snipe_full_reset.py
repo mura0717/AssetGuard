@@ -5,7 +5,6 @@ Master Reset Script for Snipe-IT Configuration
 Now uses efficient DB-based deletion instead of rate-limited API calls.
 """
 
-import os
 import sys
 import time
 from pathlib import Path

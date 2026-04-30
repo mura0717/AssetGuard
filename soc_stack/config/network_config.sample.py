@@ -22,36 +22,27 @@ DHCP_SCOPES = [
     #     'location': 'HQ',
     #     'notes': 'Main client DHCP scope for the HQ location.'
     # },
-    # {
-    #     'start_ip': '10.10.0.50',
-    #     'end_ip': '10.10.3.250',
-    #     'location': 'Branch',
-    #     'notes': 'Client DHCP scope for the Branch location.'
-    # }
+]
+
+"""
+Physical Locations for Snipe-IT
+These locations will be automatically populated in Snipe-IT during setup.
+"""
+LOCATIONS = [
+    # "HQ",
+    # "Branch Office"
 ]
 
 """
 Static IP Address Mapping
 This is the highest priority mapping. If an asset's IP is found here,
 these values will be used for categorization and naming.
-
-Format: 'IP_ADDRESS': {'device_type': '...', 'category': '...', 'host_name': '...', 'services': '...', location': '...', 'placement': '...'}
-
-device_type: Helps the categorizer select the right logic (e.g., 'Switch', 'Printer', 'Server').
-category:    The final Snipe-IT category for the asset.
-host_name:   The desired host_name for the asset in Snipe-IT.
-services:    Services present on the host machine.
-location:    The physical location host_name as defined in Snipe-IT.
-placement:   Specific placement information (e.g., Rack U23, Room 101).
 """
 
 STATIC_IP_MAP = {
     # Example Static IP MAP:
     # Routers
     #'192.168.1.1': {'device_type': 'Router', 'category': 'Routers', 'host_name': 'ISP Router', 'manufacturer': 'Generic', 'model': 'Router', 'services': '', 'location': 'HQ', 'placement': 'Server Room'},
-
-    # Printers
-    #'192.168.50': {'device_type': 'Printer', 'category': 'Printers', 'host_name': 'Reception Printer', 'manufacturer': 'Generic', 'model': 'Office Printer', 'services': '', 'location': 'HQ', 'placement': 'Reception Desk'},
 
     # Servers & Virtual Machines
     #'192.168.1.100': {'device_type': 'Server', 'category': 'Servers', 'host_name': 'Domain Controller', 'manufacturer': 'Generic', 'model': 'Virtual Server', 'services': 'Active Directory, DNS', 'location': 'HQ', 'placement': 'Hypervisor Cluster'},
