@@ -1,8 +1,8 @@
-# Basic SOC Asset Pipeline Documentation
+# AssetGuard Documentation
 
 ## 1. What the Code Does
 
-This project acts as an automated, centralized asset pipeline (dubbed "Project Hydra") for a basic Security Operations Center (SOC). It gathers, deduplicates, and distributes device data across the network without requiring agent installations for discovery.
+AssetGuard is as an automated, centralized asset pipeline (dubbed "Project Hydra") for a basic Security Operations Center (SOC). It gathers, deduplicates, and distributes device data across the network without requiring agent installations for discovery.
 
 **Core Workflow:**
 
@@ -183,6 +183,7 @@ To allow the scanner (Node 1) to perform Layer 2 ARP scans across multiple subne
 
 
 
+
 1. **Physical Switch:** The physical port connected to Node 1 is configured as a **Trunk** port (e.g., allowing your primary management VLAN and any specific target VLANs to be scanned).
 2. **Proxmox Bridge:** The virtual bridge (`vmbr0`) on Node 1 is set to **VLAN Aware**.
 3. **Scanner LXC (Multi-Homed):** The scanner container is assigned multiple virtual network interfaces directly connected to target VLANs. **These should be customized to match your specific network topography.** For example:
@@ -214,6 +215,7 @@ RuntimeDirectoryMode=0755
 
 
 
+
 1. Mask `systemd-journald` services.
 2. Create a systemd override for `rsyslog` setting sandboxing features (`PrivateDevices`, `ProtectSystem`, etc.) to `no`.
 3. Configure the `imuxsock` module in `/etc/rsyslog.d/00-imuxsock.conf` to create the `/dev/log` socket directly.
@@ -225,6 +227,7 @@ RuntimeDirectoryMode=0755
 For environments with strict hardware limitations (e.g., 8GB RAM or less per node), ZRAM can be used to prevent containers—especially Java-heavy services like Wazuh—from crashing.
 
 ### ZRAM Configuration Steps
+
 
 
 
